@@ -6,7 +6,7 @@ An nginx reverse proxy in front of them terminates SSL and allows zero-downtime 
 
 ## Installation
 
-Download a copy of all the files in this repository. You can discard any `.gitkeep` files and you don't need to keep the files in a Git repository.
+[Download the contents of this repository](https://github.com/cqse/teamscale-docker-blue-green-deployment/archive/refs/heads/master.zip) as a zip file and extract it.
 
 1. Before you start with this staging setup, first set up a _single_ Teamscale instance using [our Docker installation guide](https://docs.teamscale.com/howto/installing-with-docker/). Verify that it works as intended. It is much easier to address any infrastructure and configuration problems that might come up when dealing with a simple one-instance setup.
 2. Once that works, address all TODOs in the files in this repository

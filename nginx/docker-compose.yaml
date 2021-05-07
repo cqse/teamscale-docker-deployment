@@ -2,7 +2,7 @@ version: '3'
 services:
   nginx:
     image: 'nginx:alpine'
-    restart: always
+    restart: unless-stopped
     volumes:
       - ./nginx:/etc/nginx:ro
     ports:

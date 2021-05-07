@@ -4,7 +4,7 @@ services:
   teamscale:
     # TODO adjust Teamscale version
     image: 'cqse/teamscale:6.7.4'
-    restart: always
+    restart: unless-stopped
     working_dir: /var/teamscale
     volumes:
       - ./workingdir:/var/teamscale

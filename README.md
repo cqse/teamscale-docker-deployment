@@ -4,9 +4,26 @@ This repository contains three docker-compose scripts that set up a [blue-green 
 
 An nginx reverse proxy in front of them terminates SSL and allows zero-downtime switches betweeen the instances as described in [our blog post on our recommended productive Teamscale setup](https://www.cqse.eu/en/news/blog/teamscale-production-setup/).
 
-## Installation
+## Download
 
 [Download the contents of this repository](https://github.com/cqse/teamscale-docker-blue-green-deployment/archive/refs/heads/master.zip) as a zip file and extract it.
+
+## Playing Around
+
+The entire setup is runnable as is on `localhost`. Simply run
+
+```sh
+sudo ./start_all.sh
+```
+
+and then access any of the following URLs:
+
+- <https://localhost> (productive server)
+- <https://localhost/staging> (staging server)
+- <https://teamscale.localhost> (productive server)
+- <https://teamscale-staging.localhost> (staging server)
+
+## Installation
 
 1. Before you start with this staging setup, first set up a _single_ Teamscale instance using [our Docker installation guide](https://docs.teamscale.com/howto/installing-with-docker/). Verify that it works as intended. It is much easier to address any infrastructure and configuration problems that might come up when dealing with a simple one-instance setup.
 2. Once that works, address all TODOs in the files in this repository

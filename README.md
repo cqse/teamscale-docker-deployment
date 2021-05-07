@@ -39,6 +39,14 @@ and then access any of the following URLs:
 
 # Troubleshooting
 
+For nginx problems, consult the nginx logs:
+
+```sh
+sudo docker logs nginx_nginx_1
+```
+
+For Teamscale problems, the Teamscale logs will be stored under `workingdir/logs` of the respective instance.
+
 ## Error 502 bad gateway
 
 Please restart nginx. It noticed that your Teamscale instance was down (e.g. due to a restart) and is now refusing to try to reconnect to it. After restarting, it should be reachable again.

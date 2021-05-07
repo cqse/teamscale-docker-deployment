@@ -1,0 +1,17 @@
+version: '3'
+services:
+  nginx:
+    image: 'nginx:alpine'
+    restart: always
+    volumes:
+      - ./nginx:/etc/nginx:ro
+    ports:
+        - '80:80'
+        - '443:443'
+    networks:
+      - teamscale_net
+
+
+networks:
+  teamscale_net:
+    driver: bridge

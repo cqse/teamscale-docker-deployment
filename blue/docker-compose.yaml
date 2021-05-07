@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  teamscale:
+    # TODO adjust Teamscale version
+    image: 'cqse/teamscale:6.7.4'
+    restart: always
+    working_dir: /var/teamscale
+    volumes:
+      - ./workingdir:/var/teamscale
+      - ./backup:/backup
+    networks:
+      - nginx_teamscale_net
+      
+networks:
+  nginx_teamscale_net:
+    external: true

@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+
+  # The first Teamscale instance.
+  blue:
+    image: 'cqse/teamscale:7.5.0'
+    restart: unless-stopped
+    # The working directory within the docker container, where all data is stored.
+    # This is different from the installation directory `/opt/teamscale`
+    working_dir: /var/teamscale
+    volumes:
+      # Use the `blue` folder as working directory
+      - ./blue/:/var/teamscale/
+    environment:
+      # The Teamscale memory limit (alternative to store in jvm.properties)
+      TEAMSCALE_MEMORY: 4G
+      # This would set the temporary directory to a folder tmp within the working directory (must exist)
+      # JAVA_OPTS: "-Djava.io.tmpdir=/var/teamscale/tmp"
+
+  # The second Teamscale instance, usually with another version.
+  green:
+    image: 'cqse/teamscale:7.6.0'
+    restart: unless-stopped
+    working_dir: /var/teamscale
+    volumes:
+      # Uses a different working directory on the host
+      - ./green/:/var/teamscale/
+    environment:
+      TEAMSCALE_MEMORY: 4G
+
+  # The nginx server that proxies the Teamscale instances
+  nginx:
+    image: 'nginx:alpine'
+    restart: unless-stopped
+    volumes:
+      - ./nginx:/etc/nginx:ro
+    ports:
+        - '80:80'
+        - '443:443'
+

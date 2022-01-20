@@ -1,4 +1,4 @@
-blue/workingdir/
-blue/backup/
-green/workingdir/
-green/backup/
+/blue/*
+!/blue/config/*
+/green/*
+!/green/config/*

@@ -31,7 +31,7 @@ The whole deployment setup can be executed locally as follows, given `docker` an
 If you are migrating from a previous setup, e.g. from setting up a first independent instance, copy all config files and the `storage` folder to `./blue`.
   The *blue* instance will be the new production instance.
 
-- Ensure a valid [Teamscale license file](https://docs.teamscale.com/getting-started/installing-teamscale/#getting-your-evaluation-license) is places in the config directories, e.g. `./blue/config/teamscale.license`.
+- Ensure a valid [Teamscale license file](https://docs.teamscale.com/getting-started/installing-teamscale/#getting-your-evaluation-license) is placed in the config directories, e.g. `./blue/config/teamscale.license`.
 - Adjust [deploy-time configuration](https://docs.teamscale.com/reference/administration-ts-installation/#configuring-teamscale) such as the amount of workers (`engine.workers` in `teamscale.properties`) and memory (`TEAMSCALE_MEMORY` in `docker-compose.yaml`).
 - Change the `server_name`s in `./nginx/teamscale.conf` to the production domains and replace the self-signed certificates in `./nginx` by valid ones matching this domain.
 - Enable [automatic backups](https://docs.teamscale.com/howto/handling-backups/#automated-backups) (Starting with Teamscale 7.8 backups are enabled by default).
@@ -41,10 +41,10 @@ If you are migrating from a previous setup, e.g. from setting up a first indepen
 
 Besides providing a smooth starting point to deploy Teamscale using Docker, the setup described allows to switch instances without downtime.
 
-You can prepare lengthy updates and reanalyses in the *staging* instance that is available via `https://teamscale-next.loclhost`.
+You can prepare lengthy updates and reanalyses in the *staging* instance that is available via `https://teamscale-staging.localhost`.
 Once you are satisfied with the changes in the staging instance edit `./nginx/teamscale.conf` and switch the `blue` and `green` values of variables `$teamscale_prod` and `$teamscale_next`.
 After saving the file simply execute `sudo ./nginx-reload.sh` (or `sudo ./start.sh` as it reloads the configuration and ensures all containers are started).
-You should now be able to access the previous *staging* instance using `https://teamscale.loclhost`.
+You should now be able to access the previous *staging* instance using `https://teamscale.localhost`.
 
 ## Further tweaks and considerations
 
@@ -71,7 +71,7 @@ x-teamscale-common: &teamscale-common
 ### Serving Teamscale using subpaths instead of subdomains
 
 You can also serve Teamscale using subpaths instead of subdomains.
-Please follow the guide outlined in the [documentation](https://docs.teamscale.com/howto/configuring-reverse-proxy/).
+Please follow the guide outlined in the [documentation](https://docs.teamscale.com/howto/configuring-reverse-proxy/#basic-configuration).
 
 __Important:__ Currently there is no way to switch instances without downtime as you need to change the `server.urlprefix` configuration property in `teamscale.properties` for both instances.
 We are working on a way to resolve this issue for the next releases.
@@ -114,7 +114,7 @@ sudo docker-compose logs nginx
 
 ### Error 502 bad gateway
 
-Please restart nginx.
+Please restart nginx by running `sudo docker-compose restart nginx`.
 Nginx noticed that the Teamscale instance was down (e.g. due to a restart) and is now refusing to try to reconnect to it.
 After restarting, it should be reachable again.
 

@@ -55,7 +55,7 @@ This has the advantage of documenting the the version in paths and service names
 Thus it may prevent you from "mixing up" the colors green and blue when switching instances.
 It comes, however, with increased effort of creating folders and copying files for each release.
 
-The Teamscale services in `docker-compose.yml` might look similar to this snipped:
+The Teamscale services in `docker-compose.yml` might look similar to this snippet:
 
 ```yaml
   # Teamscale 7.7
@@ -75,7 +75,7 @@ The Teamscale services in `docker-compose.yml` might look similar to this snippe
       - ./v78/:/var/teamscale/
 ```
 
-The nginx configuration (`nginx/teamscale.conf`) will look similar to the following snipped given version 7.7 should be used for production:
+The nginx configuration (`nginx/teamscale.conf`) will look similar to the following snippet given version 7.7 should be used for production:
 
 
 ```nginx

@@ -15,10 +15,6 @@ services:
     environment:
       # The Teamscale memory limit (alternative to store in jvm.properties)
       TEAMSCALE_MEMORY: 4G
-      # This sets the temporary directory to a folder tmp within the working directory
-      # TEAMSCALE_TEMP: ./tmp
-      # Additional Java VM options
-      # JAVA_OPTS: "-Djava.io.tmpdir=/var/teamscale/tmp"
 
   # The second Teamscale instance, usually with another version.
   green:

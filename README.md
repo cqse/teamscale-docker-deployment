@@ -32,7 +32,7 @@ If you are migrating from a previous setup, e.g. from setting up a first indepen
   The *blue* instance will be the new production instance.
 
 - Ensure a valid [Teamscale license file](https://docs.teamscale.com/getting-started/installing-teamscale/#getting-your-evaluation-license) is placed in the config directories, e.g. `./blue/config/teamscale.license`.
-- Adjust [deploy-time configuration](https://docs.teamscale.com/reference/administration-ts-installation/#configuring-teamscale) such as the amount of workers (`engine.workers` in `teamscale.properties`) and memory (`TEAMSCALE_MEMORY` in `docker-compose.yaml`).
+- Adjust [deploy-time configuration](https://docs.teamscale.com/reference/administration-ts-installation/#configuring-teamscale) such as the amount of workers (`engine.workers` in `teamscale.properties`) and memory (`TEAMSCALE_MEMORY` in `docker-compose.yml`).
 - Change the `server_name`s in `./nginx/teamscale.conf` to the production domains and replace the self-signed certificates in `./nginx` by valid ones matching this domain.
 - Enable [automatic backups](https://docs.teamscale.com/howto/handling-backups/#automated-backups) (Starting with Teamscale 7.8 backups are enabled by default).
 - Make sure Docker and the services are automatically restarted when you restart your server.
@@ -57,7 +57,7 @@ This allows you to easily differentiate the blue and green environment from the 
 
 You can make use of *yaml-anchors* to extract common configuration that is shared between services:
 
-```
+```yaml
 x-teamscale-common: &teamscale-common
   restart: unless-stopped
   working_dir: /var/teamscale

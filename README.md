@@ -48,6 +48,78 @@ You should now be able to access the previous *staging* instance using `https://
 
 ## Further tweaks and considerations
 
+### Name services according to releases
+
+Instead of alternating and reusing two instances a different deployment method is naming Teamscale services according to releases.
+This has the advantage of documenting the the version in paths and service names.
+Thus it may prevent you from "mixing up" the colors green and blue when switching instances.
+It comes, however, with increased effort of creating folders and copying files for each release.
+
+The Teamscale services in `docker-compose.yml` might look similar to this snipped:
+
+```yaml
+  # Teamscale 7.7
+  v77:
+    image: 'cqse/teamscale:7.7.0'
+    restart: unless-stopped
+    working_dir: /var/teamscale
+    volumes:
+      - ./v77/:/var/teamscale/
+
+  # Teamscale 7.8
+  v78:
+    image: 'cqse/teamscale:7.8.0'
+    restart: unless-stopped
+    working_dir: /var/teamscale
+    volumes:
+      - ./v78/:/var/teamscale/
+```
+
+The nginx configuration (`nginx/teamscale.conf`) will look similar to the following snipped given version 7.7 should be used for production:
+
+
+```nginx
+# Teamscale 7.7 Server
+server {
+    set $teamscale_host  v77;
+
+    server_name teamscale.localhost teamscale-v77.localhost;
+
+    listen      443  ssl http2;
+    listen [::]:443  ssl http2;
+
+    location / {
+        proxy_pass http://$teamscale_host:8080;
+    }
+}
+
+# Teamscale 7.8 Server
+server {
+    set $teamscale_host  v78;
+
+    server_name teamscale-v78.localhost;
+
+    listen      443  ssl http2;
+    listen [::]:443  ssl http2;
+
+    location / {
+        proxy_pass http://$teamscale_host:8080;
+    }
+}
+```
+
+The servers should be available using
+  - <https://teamscale.localhost> (7.7, the productive server)
+  - <https://teamscale-v77.localhost> (7.7, the productive server, alternative address)
+  - <https://teamscale-v78.localhost> (7.8, the staging server)
+
+Setting version 7.8 as productive instance just requires to move `teamscale.localhost` from one `server_name` to the other.
+
+Adding a new release requires to:
+- copy the `config` folder from an existing instance
+- add a new service entry in `docker-compose.yml`
+- add a new server in `nginx/teamscale.conf`
+
 ### Visually distinguish both instances
 
 Set the `instance.name` property to `blue` or `green` respectively in each instance's `teamscale.properties` config file.

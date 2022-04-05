@@ -1,9 +1,0 @@
-/blue/*
-!/blue/config/
-/blue/config/*
-!/blue/config/teamscale.properties
-
-/green/*
-!/green/config/
-/green/config/*
-!/green/config/teamscale.properties

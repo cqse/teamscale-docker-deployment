@@ -2,28 +2,28 @@ version: '3'
 
 services:
 
-  # The first Teamscale instance.
-  blue:
-    image: 'cqse/teamscale:7.7.0'
+  # The production Teamscale instance.
+  v7.7:
+    # This targets the latest 7.7 release. Altenatively use e.g. 'cqse/teamscale:7.7.0' to point to a specific release.
+    image: 'cqse/teamscale:7.7.latest'
     restart: unless-stopped
     # The working directory within the docker container, where all data is stored.
     # This is different from the installation directory `/opt/teamscale`
     working_dir: /var/teamscale
     volumes:
-      # Use the `blue` folder as working directory
-      - ./blue/:/var/teamscale/
+      # Use the `v7.7` folder as working directory
+      - ./v7.7/:/var/teamscale/
     environment:
       # The Teamscale memory limit (alternative to store in jvm.properties)
       TEAMSCALE_MEMORY: 4G
 
-  # The second Teamscale instance, usually with another version.
-  green:
-    image: 'cqse/teamscale:7.7.0'
+  # The staging Teamscale instance.
+  v7.8:
+    image: 'cqse/teamscale:7.8.0rc3'
     restart: unless-stopped
     working_dir: /var/teamscale
     volumes:
-      # Use the `green` folder as working directory
-      - ./green/:/var/teamscale/
+      - ./v7.8/:/var/teamscale/
     environment:
       TEAMSCALE_MEMORY: 4G
 

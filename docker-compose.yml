@@ -19,7 +19,7 @@ services:
 
   # The staging Teamscale instance.
   v7.8:
-    image: 'cqse/teamscale:7.8.0rc3'
+    image: 'cqse/teamscale:7.8.latest'
     restart: unless-stopped
     working_dir: /var/teamscale
     volumes:

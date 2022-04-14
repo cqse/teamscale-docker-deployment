@@ -49,7 +49,7 @@ Thus, it may prevent you from "mixing up" instances and allows to switch the pro
 It comes, however, with increased effort of creating folders and copying files for each release.
 
 This example describes two Teamscale instances:
-* `v7.7` is the production instance: in a real-world scenario, this instance would already be filled with analysis data)
+* `v7.7` is the production instance: in a real-world scenario, this instance would already be filled with analysis data
 * `v7.8` is the staging instance: in a real-world scenario, this instance would reanalyze the data of `v7.7` and go live after the analysis has finished)
 
 The servers should be available using

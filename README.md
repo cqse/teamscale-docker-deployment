@@ -24,7 +24,7 @@ The whole deployment setup can be executed locally as follows, given `docker` an
 2. Start the containers using `sudo ./start.sh`.
    This starts all containers in detached mode (`docker-compose up -d`), reloads the nginx config (`./nginx-reload.sh`) and then follows the logs `docker-compose logs --follow`.
 
-   _Note:_ You can detach from the console at any time using `Ctrl+C`.
+   _Note:_ You can detach from the console at any time using `Ctrl+C`. Teamscale will keep running.
 
 3. The Teamscale servers should be available via NGINX at the following URLs
   - <https://teamscale.localhost> (the production server)

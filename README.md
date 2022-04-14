@@ -50,7 +50,7 @@ It comes, however, with increased effort of creating folders and copying files f
 
 This example describes two Teamscale instances:
 * `v7.7` is the production instance: in a real-world scenario, this instance would already be filled with analysis data
-* `v7.8` is the staging instance: in a real-world scenario, this instance would reanalyze the data of `v7.7` and go live after the analysis has finished)
+* `v7.8` is the staging instance: in a real-world scenario, this instance would reanalyze the data of `v7.7` and go live after the analysis has finished
 
 The servers should be available using
   - <https://teamscale.localhost> (7.7, the production server)

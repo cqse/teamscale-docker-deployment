@@ -30,6 +30,10 @@ The whole deployment setup can be executed locally as follows, given `docker` an
   - <https://teamscale.localhost> (the production server)
   - <https://teamscale-staging.localhost> (the staging server)
 
+> **Remark:**
+> The web services are SSL-encryted using a self-signed certificate (located in folder `nginx`) for demo-purposes.
+> It is **strongly** recommended to exchange this certificate with an appropriate certificate.
+
 ### Production Setup
 
 #### Motivation

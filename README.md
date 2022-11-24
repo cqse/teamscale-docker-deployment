@@ -180,7 +180,7 @@ This especially is the case when you need to purge the storage directory when se
 
 ### Visually distinguish both instances
 
-Set the `instance.name` property to the release number (e.g. `v7.7`, or `blue` and `green`) respectively in each instance's `teamscale.properties` config file.
+Set the `instance.name` property to the release number (e.g. `v7.7`, or `blue` and `green`) respectively in each instance's `teamscale.properties` config file or in `docker-compose.yml`.
 This allows you to easily differentiate the environment from the Web UI.
 
 ### Using YAML anchors

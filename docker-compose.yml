@@ -20,13 +20,9 @@ services:
       TS_PROPERTIES: |-
         engine.workers=2
         instance.name=v7.7
-      # Overwrite JVM options
-      TEAMSCALE_OPTS: >-
-        -Dcom.teamscale.mergerequest.disable-automatic-webhook-creation=true
-        -Dcom.teamscale.enable-monitoring-uploads=true
-        -Dcom.teamscale.commit-tree-timestamp-assertion=true
-        -XX:HeapDumpPath=/var/teamscale/logs
-        -XX:+HeapDumpOnOutOfMemoryError
+      # You can also overwrite JVM options if necessary
+      # TEAMSCALE_OPTS: >-
+      #   -Dcom.teamscale.mergerequest.disable-automatic-webhook-creation=true
 
   # The staging Teamscale instance.
   v7.8:

@@ -16,11 +16,14 @@ services:
     environment:
       # The Teamscale memory limit (alternative to storing it in jvm.properties)
       TEAMSCALE_MEMORY: 4G
-      # Overwrite settings from config/teamscale.properties
+      # You can specify Teamscale properties here
+      # teamscale.properties is not considered at all when this environment variable is set
       TS_PROPERTIES: |-
+        database.type=leveldb
         engine.workers=2
         instance.name=v7.7
       # You can also overwrite JVM options if necessary
+      # jvm.properties is not considered at all if this environment variable is set
       # TEAMSCALE_OPTS: >-
       #   -Dcom.teamscale.mergerequest.disable-automatic-webhook-creation=true
 
@@ -34,6 +37,7 @@ services:
     environment:
       TEAMSCALE_MEMORY: 4G
       TS_PROPERTIES: |-
+        database.type=leveldb
         engine.workers=2
         instance.name=v7.8
 

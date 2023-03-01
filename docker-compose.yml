@@ -22,8 +22,7 @@ services:
         database.type=leveldb
         engine.workers=2
         instance.name=v7.7
-      # You can also overwrite JVM options if necessary
-      # jvm.properties is not considered at all if this environment variable is set
+      # You can also specify additional options that should be appended to the JVM command line
       # TEAMSCALE_OPTS: >-
       #   -Dcom.teamscale.mergerequest.disable-automatic-webhook-creation=true
 

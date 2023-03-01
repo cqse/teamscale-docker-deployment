@@ -16,17 +16,15 @@ services:
     environment:
       # The Teamscale memory limit (alternative to storing it in jvm.properties)
       TEAMSCALE_MEMORY: 4G
-      # Overwrite settings from config/teamscale.properties
+      # You can specify Teamscale properties here
+      # teamscale.properties is not considered at all when this environment variable is set
       TS_PROPERTIES: |-
+        database.type=leveldb
         engine.workers=2
         instance.name=v7.7
-      # Overwrite JVM options
-      TEAMSCALE_OPTS: >-
-        -Dcom.teamscale.mergerequest.disable-automatic-webhook-creation=true
-        -Dcom.teamscale.enable-monitoring-uploads=true
-        -Dcom.teamscale.commit-tree-timestamp-assertion=true
-        -XX:HeapDumpPath=/var/teamscale/logs
-        -XX:+HeapDumpOnOutOfMemoryError
+      # You can also specify additional options that should be appended to the JVM command line
+      # TEAMSCALE_OPTS: >-
+      #   -Dcom.teamscale.mergerequest.disable-automatic-webhook-creation=true
 
   # The staging Teamscale instance.
   v7.8:
@@ -38,6 +36,7 @@ services:
     environment:
       TEAMSCALE_MEMORY: 4G
       TS_PROPERTIES: |-
+        database.type=leveldb
         engine.workers=2
         instance.name=v7.8
 

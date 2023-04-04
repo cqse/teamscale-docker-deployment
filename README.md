@@ -247,3 +247,9 @@ sudo docker-compose logs nginx
 Please restart nginx by running `sudo docker-compose restart nginx`.
 Nginx noticed that the Teamscale instance was down (e.g. due to a restart) and is now refusing to try to reconnect to it.
 After restarting, it should be reachable again.
+
+### Teamscale Dashboard cannot be embedded
+
+The provided nginx configuration forbids a page from being displayed in a frame to prevent click-jacking. 
+You can learn more about thise [here](https://owasp.org/www-community/attacks/Clickjacking). 
+If you still want to embed a Teamscale in Jira, Azure DevOps or another Teamscale instance, the line `add_header X-Frame-Options "DENY";` in `nginx/common.conf`has to be commented out. 

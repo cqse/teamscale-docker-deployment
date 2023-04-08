@@ -1,16 +1,13 @@
 # Teamscale Docker Deployment
 
 This repository contains a reference configuration for deploying Teamscale using [*docker-compose*](https://docs.docker.com/compose/).
-
-In contrast to the simple setup described in the [Teamscale Docker How-To](https://docs.teamscale.com/howto/installing-teamscale/installing-with-docker/) this setup describes a more complex setup with multiple Teamscale instances used for staging and a reverse proxy for SSL termination.
+This setup describes a more complex setup with multiple Teamscale instances used for staging and a reverse proxy for SSL termination.
 Focus is put on switching the production instance with zero downtime.
 
 Although this repository will give you a good starting point in setting up Teamscale, we strongly recommend reading the following documentation first:
 * [How to install Teamscale with Docker and docker-compose](https://docs.teamscale.com/howto/installing-with-docker/)
 * [How to access Teamscale via a Reverse Proxy](https://docs.teamscale.com/howto/configuring-reverse-proxy/)
 
-In particular, before starting to configure a deployment with multiple Teamscale instances, set up a _single_ instance first.
-It is much easier to address infrastructure and configuration problems when dealing with a simple one-instance setup.
 Please refer to the according section in the [official documentation](https://docs.teamscale.com/howto/installing-with-docker/) and the [specific section](#single-instance) in this guide.
 
 ## Installation

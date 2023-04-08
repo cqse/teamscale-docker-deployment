@@ -14,6 +14,8 @@ services:
       # Use the `v7.7` folder as working directory
       - ./v7.7/:/var/teamscale/
     environment:
+      # Specify the timezone of the host system
+      TZ: "Europe/Berlin"
       # The Teamscale memory limit (alternative to storing it in jvm.properties)
       TEAMSCALE_MEMORY: 4G
       # You can specify Teamscale properties here
@@ -34,6 +36,7 @@ services:
     volumes:
       - ./v7.8/:/var/teamscale/
     environment:
+      TZ: "Europe/Berlin"
       TEAMSCALE_MEMORY: 4G
       TS_PROPERTIES: |-
         database.type=leveldb

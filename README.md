@@ -8,6 +8,8 @@ Although this repository will give you a good starting point in setting up Teams
 * [How to install Teamscale with Docker and docker-compose](https://docs.teamscale.com/howto/installing-with-docker/)
 * [How to access Teamscale via a Reverse Proxy](https://docs.teamscale.com/howto/configuring-reverse-proxy/)
 
+As a general note, it can be useful to start with a single instance setup first.
+Addressing infrastructure and configuration problems is typically much easier in a single instance setup.
 Please refer to the [respective section](#single-instance) in this guide.
 
 ## Installation

@@ -13,6 +13,10 @@ services:
     volumes:
       # Use the `v7.7` folder as working directory
       - ./v7.7/:/var/teamscale/
+      # Mount the custom checks (if present) as read-only within the working directory
+      # - ./custom-checks:/var/teamscale/custom-checks:ro
+      # Also external libraries (such as the SAP Java Connector) should be mounted as read-only within the installation directory
+      # - ./lib-ext:/opt/teamscale/lib-ext:ro
     environment:
       # Specify the timezone of the host system
       TZ: "Europe/Berlin"
@@ -35,6 +39,10 @@ services:
     working_dir: /var/teamscale
     volumes:
       - ./v7.8/:/var/teamscale/
+      # Mount the custom checks (if present) as read-only within the working directory
+      # - ./custom-checks:/var/teamscale/custom-checks:ro
+      # Also external libraries (such as the SAP Java Connector) should be mounted as read-only within the installation directory
+      # - ./lib-ext:/opt/teamscale/lib-ext:ro
     environment:
       TZ: "Europe/Berlin"
       TEAMSCALE_MEMORY: 4G
@@ -50,6 +58,6 @@ services:
     volumes:
       - ./nginx:/etc/nginx/conf.d:ro
     ports:
-        - '80:80'
-        - '443:443'
+      - '80:80'
+      - '443:443'
 

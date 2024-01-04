@@ -75,31 +75,9 @@ Especially when migrating from a previous setup like setting up a first independ
 
 _Note:_ For initial setup you may want to just run a [single instance](#single-instance).
 
-#### Prepare for a new release
+## Updatating Teamscale
 
-Besides providing a smooth starting point to deploy Teamscale using Docker, the setup described allows to switch instances without downtime.
-
-Once you want to update to a new Teamscale release, e.g. `v7.8`, the following steps are required:
-
-1. Add a new directory named according to the version, e.g. `v7.8`.
-  - copy the `config` folder (containing `teamscale.license` and `teamscale.properties` ) from the production instance to `v7.8`
-  - adjust any configuration (e.g. workers, memory)
-
-2. Add a new service entry in `docker-compose.yml`, e.g. by coping the entry from `v7.7`
-  - adjust the `image` to the new release, e.g. `cqse/teamscale:7.8.latest`
-  - change the volume mount to the newly created folder, e.g. `./v7.8/:/var/teamscale/`
-
-3. Reference the `v7.8` Docker service in the staging server section of `nginx/teamscale.conf` (`set $teamscale_next  v7.8;`)
-
-Executing `sudo ./start.sh` will pull the images, start the Teamscale service and update nginx.
-
-#### Switch to a new release
-
-Once the new release has finished analysis, it can be set as productive instance without downtime as follows:
-
-1. Update the production server section of `nginx/teamscale.conf` to reference the previous staging Teamscale server (e,g. `set $teamscale_prod  v7.8;`)
-
-2. Reload the nginx configuration by executing `sudo ./nginx-reload.sh`
+Our documentation describes how to perform [Patch Version Updates](https://docs.teamscale.com/howto/updating-teamscale/patch-version/) and [Feature Version Updates](https://docs.teamscale.com/howto/updating-teamscale/feature-version/) using this setup.
 
 ## Further tweaks and considerations
 

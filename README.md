@@ -75,7 +75,7 @@ Especially when migrating from a previous setup like setting up a first independ
 
 _Note:_ For initial setup you may want to just run a [single instance](#single-instance).
 
-## Updatating Teamscale
+## Updating Teamscale
 
 Our documentation describes how to perform [Patch Version Updates](https://docs.teamscale.com/howto/updating-teamscale/patch-version/) and [Feature Version Updates](https://docs.teamscale.com/howto/updating-teamscale/feature-version/) using this setup.
 

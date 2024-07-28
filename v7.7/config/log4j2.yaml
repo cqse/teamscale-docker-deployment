@@ -1,0 +1,148 @@
+# Configuration of how and where log4j 2 writes Teamscale log entries
+# See https://logging.apache.org/log4j/2.x/manual/layouts.html for documentation of this file format
+
+Configuration:
+  status: "off" # disable the internal log4j status logger (which would log the status of the log4j configuration)
+  name: Teamscale
+  monitorInterval: 60 # Log4j 2 config (this file) is monitored for changes every 60 seconds
+  packages: org.conqat.engine.core.logging # custom packages. This one contains our log4j 2 API implementations (e.g., TeamscaleLogAppender)
+
+
+  appenders: # The appenders define how messages are logged.
+
+    Console: # Console appender used to make sure that fatal entries reach the user (e.i. nohup.out on linux dists, or docker runs)
+      name: ConsoleErrorAppender
+      target: SYSTEM_ERR
+      PatternLayout:
+        # See https://logging.apache.org/log4j/2.x/manual/layouts.html
+        Pattern: "* %-5level [%threadName] %date:%variablesNotEmpty{ %mdc{job}:} %message%n"
+
+    RollingFile: # This appender writes all log entries to a list of files (overwriting old files eventually)
+      name: TeamscaleLogFile
+      fileName: logs/teamscale.log
+      filePattern: logs/teamscale-%i.log
+      policies:
+        SizeBasedTriggeringPolicy:
+          size: 1MB
+      DefaultRolloverStrategy:
+        max: 10
+      PatternLayout:
+        Pattern: "* %-5level [%threadName] %date:%variablesNotEmpty{ %mdc{job,trigger,project,commit}:} %message%n"
+      Filters:
+        RegexFilter: # filters messages from this appender based on regex (matching log messages are ignored)
+          regex: ".*Couldn't find physical processor count.*"
+          onMatch: DENY
+          onMismatch: NEUTRAL
+
+    TeamscaleLog: # This appender handles the Teamscale-internal logging (i.e., the log messages we show in the system perspective)
+      name: TeamscaleLogAppender
+
+  #    File:
+  #      # This appender (if uncommented) writes all messages to logs/ldap.log.
+  #      # This appender is referenced by name LdapLog in the logger configuration below.
+  #      - name: LdapLog
+  #        fileName: logs/ldap.log
+  #        PatternLayout:
+  #          Pattern: "* %-5level [%threadName] %date:%variablesNotEmpty{ %mdc{job}:} %message%n"
+  #      # This appender (if uncommented) writes all messages with marker "Voting" to logs/voting.log.
+  #      # This appender is referenced by name VotingLog in the logger configuration below.
+  #      - name: VotingLog
+  #        fileName: logs/voting.log
+  #        PatternLayout:
+  #          Pattern: "* %-5level [%threadName] %date:%variablesNotEmpty{ %mdc{job}:} %message%n"
+  #        Filters:
+  #          - MarkerFilter:
+  #              marker: Interaction
+  #              onMatch: ACCEPT
+  #              onMismatch: DENY
+  #      # This appender (if uncommented) writes a request and response log for all REST calls to logs/service.log.
+  #      # This appender is referenced by name ServiceLog in the logger configuration below.
+  #      - name: ServiceLog
+  #        fileName: logs/service.log
+  #        PatternLayout:
+  #          Pattern: "%-5level %date: %message%n"
+  #          Filters:
+  #            - MarkerFilter:
+  #                marker: RequestStart
+  #                onMatch: ACCEPT
+  #                onMismatch: DENY
+  #            - MarkerFilter:
+  #                marker: RequestEnd
+  #                onMatch: ACCEPT
+  #                onMismatch: DENY
+
+
+  #    SplunkHttp:
+  #      # This appender can be used to forward logs to a Splunk server
+  #      # See https://dev.splunk.com/enterprise/docs/devtools/java/logging-java
+  #      name: SplunkHttpEventCollector
+  #      url: "https://splunk-hostname:8088"
+  #      token: "Insert Token for HTTP Event Collector Input in Splunk here"
+  #      PatternLayout:
+  #        # No need to add date, log level or thread name since these are attributes of the log event forwarded to
+  #        # Splunk anyways.
+  #        Pattern: "%variablesNotEmpty{%mdc{job}: }%message"
+
+  #    File:
+  #      name: ElasticLogFile
+  #      fileName: logs/elasticlog.json
+  #      JsonTemplateLayout:
+  #        eventTemplateUri: classpath:EcsLayout.json
+
+  Loggers: # The loggers define which messages are routed to which appenders.
+    Root:
+      level: info # First filtering stage: drop everything below INFO level
+      Filters: # Second filtering stage
+        - MarkerFilter:
+            marker: parse-log  # We always accept parse-log entries. This is required
+            onMatch: ACCEPT    # to populate the parse log view in the Teamscale UI.
+            onMismatch: NEUTRAL
+        - MarkerFilter:
+            marker: INTERACTION  # We always accept interaction logs. This is required
+            onMatch: ACCEPT      # to have INFO messages in the TS interaction log view.
+            onMismatch: NEUTRAL
+        - ThresholdFilter:
+            level: warn # Drop all remaining INFO messages, only keep warnings and errors
+      AppenderRef:
+        - ref: TeamscaleLogFile
+        - ref: TeamscaleLogAppender
+        - ref: ConsoleErrorAppender
+          level: fatal # nothing below fatal is forwarded to the ConsoleErrorAppender
+    #        ## Uncomment this to also forward these logs to a Splunk server via the Splunk HTTP event collector appender
+    #        ## defined above. Using the appender for more specific logging as shown in examples below also works.
+    #        - ref: SplunkHttpEventCollector
+    #        ## Uncomment this to also write these logs as a JSON file in the ECS specification, e.g., for importing an Kibana.
+    #        - ref: ElasticLogFile
+
+    Logger:
+      # Configuration for logging short info messages at instance startup and shut down.
+      # Set level to "off" to disable logging these messages.
+      - name: operations-log
+        level: info
+        additivity: false
+        AppenderRef:
+          ref: TeamscaleLogFile
+#      # Configuration for the "LdapLog" file appender example above that also logs level info to the appender.
+#      - name: com.teamscale.core.authenticate.ldap # name of the package which should be handled by this logger
+#        level: info
+#        additivity: true # when set to false, root logger will not receive events already logged here
+#        AppenderRef:
+#          ref: LdapLog # name of the appender that is served by this logger
+#      # Configuration for the "VotingLog" file appender example above that also logs level info to the appender.
+#      # These two loggers only include logs via the static loggers defined in these classes.
+#      - name: com.teamscale.index.merge_request.voting.VotingRecorder
+#        level: info
+#        additivity: true
+#        AppenderRef:
+#          ref: VotingLog
+#      - name: com.teamscale.index.repository.git.common.CommitVotingTriggerBase
+#        level: info
+#        additivity: true
+#        AppenderRef:
+#          ref: VotingLog
+#      # Configuration for the "ServiceLog" file appender example above that logs level info logs about REST requests.
+#      - name: teamscale-rest-api-requests
+#        level: info
+#        additivity: false # Ensure that logs are only written to service log file and not sent to the TeamscaleLogAppender.
+#        AppenderRef:
+#          ref: ServiceLog

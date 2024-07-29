@@ -1,3 +1,5 @@
 *
 !.gitignore
 !config
+!config/log4j2.yaml
+

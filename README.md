@@ -1,11 +1,11 @@
 # Teamscale Docker Deployment
 
-This repository contains a reference configuration for deploying Teamscale using [*docker-compose*](https://docs.docker.com/compose/).
+This repository contains a reference configuration for deploying Teamscale using [*Docker Compose*](https://docs.docker.com/compose/).
 This setup uses multiple Teamscale instances for staging and a reverse proxy for SSL termination.
 Focus is put on switching the production instance with zero downtime.
 
 Although this repository will give you a good starting point in setting up Teamscale, we strongly recommend reading the following documentation first:
-* [How to install Teamscale with Docker and docker-compose](https://docs.teamscale.com/howto/installing-with-docker/)
+* [How to install Teamscale with Docker and Docker Compose](https://docs.teamscale.com/howto/installing-with-docker/)
 * [How to access Teamscale via a Reverse Proxy](https://docs.teamscale.com/howto/configuring-reverse-proxy/)
 
 As a general note, it can be useful to start with a single instance setup first.
@@ -16,21 +16,21 @@ Please refer to the [respective section](#single-instance) in this guide.
 
 ### Quick Setup
 
-The whole deployment setup can be executed locally as follows, given `docker` and `docker-compose` are installed:
+The whole deployment setup can be executed locally as follows, given `docker` and the Docker Compose plugin are installed:
 
 1. [Download](https://github.com/cqse/teamscale-docker-deployment/archive/refs/heads/master.zip) the contents of this repository as a zip file and extract it.
 
 2. Start the containers using `sudo ./start.sh`.
-   This starts all containers in detached mode (`docker-compose up -d`), reloads the nginx config (`./nginx-reload.sh`) and then follows the logs `docker-compose logs --follow`.
+   This starts all containers in detached mode (`docker compose up -d`), reloads the nginx config (`./nginx-reload.sh`) and then follows the logs `docker compose logs --follow`.
 
    _Note:_ You can detach from the console at any time using `Ctrl+C`. Teamscale will keep running.
 
-3. The Teamscale servers should be available via NGINX at the following URLs
+3. The Teamscale servers should be available via nginx at the following URLs
   - <https://teamscale.localhost> (the production server)
   - <https://teamscale-staging.localhost> (the staging server)
 
 > **Remark:**
-> The web services are SSL-encryted using a self-signed certificate (located in folder `nginx`) for demo-purposes.
+> The web services are SSL-encrypted using a self-signed certificate (located in folder `nginx`) for demo-purposes.
 > It is **strongly** recommended to exchange this certificate with an appropriate certificate.
 
 ### Production Setup
@@ -38,39 +38,38 @@ The whole deployment setup can be executed locally as follows, given `docker` an
 #### Motivation
 
 You may ask, why do I need to deploy two Teamscale instances for updates at all?
-The reason is that Teamscale does not perform database upgrades upon updating from one feature version to another (e.g. v7.7 to v7.8).
+The reason is that Teamscale does not perform database upgrades upon updating from one feature version to another (e.g. v2025.1 to v2025.2).
 Instead it performs a fresh analysis of source code and other artifacts to compensate for newly added or modified analyses.
 Ideally this reanalysis is performed on a second instance to avoid unavailability of analysis results.
-Patch releases, however, (e.g. v7.7.1 to v7.7.2) are drop-in and thus do _not_ require setting up a staging instance .
+Patch releases, however, (e.g. v2025.2.1 to v2025.2.2) are drop-in and thus do _not_ require setting up a staging instance .
 For more information, please consult the corresponding how-to on [updating Teamscale](https://docs.teamscale.com/howto/updating-teamscale/#feature-version-updates).
 
 #### Architecture
 
 Instead of hard-coding two instances, e.g. named `production` and `staging`, this guides follows a Teamscale release-based deployment setup.
-It configures Teamscale services according to releases and has the advantage of documenting the the version in paths and service names.
+It configures Teamscale services according to releases and has the advantage of documenting the version in paths and service names.
 Thus, it may prevent you from "mixing up" instances and allows to switch the production server without downtime.
 It comes, however, with increased effort of creating folders and copying files for each release.
 
 This example describes two Teamscale instances:
-* `v7.7` is the production instance: in a real-world scenario, this instance would already be filled with analysis data
-* `v7.8` is the staging instance: in a real-world scenario, this instance would reanalyze the data of `v7.7` and go live after the analysis has finished
+* `v2025.1` is the production instance: in a real-world scenario, this instance would already be filled with analysis data
+* `v2025.2` is the staging instance: in a real-world scenario, this instance would reanalyze the data of `v2025.1` and go live after the analysis has finished
 
 The servers should be available using
-  - <https://teamscale.localhost> (7.7, the production server)
-  - <https://teamscale-next.localhost> (7.8, the staging server)
+  - <https://teamscale.localhost> (2025.1, the production server)
+  - <https://teamscale-next.localhost> (2025.2, the staging server)
 
-The data and configuration files for these instances are stored in folders named according to the deployed releases, e.g. `v7.7` and `v7.8`.
-Also the services described in `docker-compose.yml` have the same naming scheme, e.g. `v7.7` and `v7.8`.
+The data and configuration files for these instances are stored in folders named according to the deployed releases, e.g. `v2025.1` and `v2025.2`.
+The services described in `docker-compose.yml` have the same naming scheme, e.g. `v2025.1` and `v2025.2`.
 
 #### Getting started
 
-_Note:_ `v7.7` and `v7.8` are only used as example, please replace these with your current needs.
-Especially when migrating from a previous setup like setting up a first independent instance, copy all config files and the `storage` folder to e.g. `./v7.7`.
+_Note:_ `v2025.1` and `v2025.2` are only used as example, please replace these with your current needs.
+Especially when migrating from a previous setup like setting up a first independent instance, copy all config files and the `storage` folder to e.g. `./v2025.1`.
 
-- Ensure a valid [Teamscale license file](https://docs.teamscale.com/getting-started/installing-teamscale/#getting-your-evaluation-license) is placed in the config directories, e.g. `./v7.7/config/teamscale.license`.
+- Ensure a valid [Teamscale license file](https://docs.teamscale.com/getting-started/installing-teamscale/#getting-your-evaluation-license) is placed in the config directories, e.g. `./v2025.1/config/teamscale.license`.
 - Adjust [deploy-time configuration](https://docs.teamscale.com/reference/administration-ts-installation/#configuring-teamscale) such as the amount of workers (`engine.workers` in `teamscale.properties`) and memory (`TEAMSCALE_MEMORY` in `docker-compose.yml`).
 - Change the `server_name`s in `./nginx/teamscale.conf` to the production domains and replace the self-signed certificates in `./nginx` by valid ones matching this domain.
-- Enable [automatic backups](https://docs.teamscale.com/howto/handling-backups/#automated-backups) (Starting with Teamscale v7.8 backups are enabled by default).
 - Make sure Docker and the services are automatically restarted when you restart your server.
 
 _Note:_ For initial setup you may want to just run a [single instance](#single-instance).
@@ -83,8 +82,8 @@ Our documentation describes how to perform [Patch Version Updates](https://docs.
 
 ### Single instance
 
-The staging instance (in this example `v7.8`) can be disabled in `docker-compose.yml` for the initial setup, e.g. by renaming the service from `v7.8` to `x-v7.8`.
-Prefixing a service with `x-` [hides](https://docs.docker.com/compose/compose-file/#extension) it from _docker-compose_.
+The staging instance (in this example `v2025.2`) can be disabled in `docker-compose.yml` for the initial setup, e.g. by renaming the service from `v2025.2` to `x-v2025.2`.
+Prefixing a service with `x-` [hides](https://docs.docker.com/compose/compose-file/#extension) it from _docker compose_.
 
 If you want to use this setup to run exactly one instance this service can be removed completely.
 In addition, you should delete the staging server in the `teamscale.conf` nginx configuration.
@@ -95,18 +94,18 @@ A different deployment pattern is the so-called [blue-green deployment](https://
 It contains two Teamscale instances, called "blue" and "green", that alternate between being the production server and the staging environment.
 
 The setup is similar to the release-based naming but relieves you from creating/copying new services and configuration files for each release.
-It contains two `docker-compose` services named `blue` and `green` with data and configuration directories named accordingly:
+It contains two Docker Compose services named `blue` and `green` with data and configuration directories named accordingly:
 
 ```yml
   blue:
-    image: 'cqse/teamscale:7.7.latest'
+    image: 'cqse/teamscale:2025.1.latest'
     restart: unless-stopped
     working_dir: /var/teamscale
     volumes:
       - ./blue/:/var/teamscale/
 
   green:
-    image: 'cqse/teamscale:7.8.latest'
+    image: 'cqse/teamscale:2025.2.latest'
     restart: unless-stopped
     working_dir: /var/teamscale
     volumes:
@@ -157,7 +156,7 @@ This especially is the case when you need to purge the storage directory when se
 
 ### Visually distinguish both instances
 
-Set the `instance.name` property to the release number (e.g. `v7.7`, or `blue` and `green`) respectively in each instance's `teamscale.properties` config file or in `docker-compose.yml`.
+Set the `instance.name` property to the release number (e.g. `v2025.1`, or `blue`) respectively in each instance's `teamscale.properties` config file or in `docker-compose.yml`.
 This allows you to easily differentiate the environment from the Web UI.
 
 ### Using YAML anchors
@@ -171,7 +170,7 @@ x-teamscale-common: &teamscale-common
   environment:
     JAVA_OPTS: "-Dlog4j2.formatMsgNoLookups=true"
 
-  v7.7:
+  v2025.1:
     <<: *teamscale-common
 ```
 
@@ -198,7 +197,7 @@ In particular change the mount from `/etc/nginx/conf.d/` to `/etc/nginx/` and pr
 If you need to access the HTTP interface of the container directly, e.g. for debugging reasons, you need to explicitly map the port:
 
 ```yaml
-  v7.7:
+  v2025.1:
     # ...
     ports:
       - '8080:8080'
@@ -210,23 +209,23 @@ For Teamscale problems, the Teamscale logs will be stored in the folder `./logs`
 In addition, the console output is available via:
 
 ```sh
-sudo docker-compose logs <service-name>
+sudo docker compose logs <service-name>
 ```
 
 For nginx problems, consult the nginx logs:
 
 ```sh
-sudo docker-compose logs nginx
+sudo docker compose logs nginx
 ```
 
 ### Error 502 bad gateway
 
-Please restart nginx by running `sudo docker-compose restart nginx`.
+Please restart nginx by running `sudo docker compose restart nginx`.
 Nginx noticed that the Teamscale instance was down (e.g. due to a restart) and is now refusing to try to reconnect to it.
 After restarting, it should be reachable again.
 
 ### Teamscale Dashboard cannot be embedded
 
 The provided nginx configuration forbids a page from being displayed in a frame to prevent click-jacking. 
-You can learn more about thise [here](https://owasp.org/www-community/attacks/Clickjacking). 
+You can learn more about this [here](https://owasp.org/www-community/attacks/Clickjacking). 
 If you still want to embed a Teamscale in Jira, Azure DevOps or another Teamscale instance, the line `add_header X-Frame-Options "DENY";` in `nginx/common.conf`has to be commented out. 

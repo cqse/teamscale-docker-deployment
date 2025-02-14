@@ -1,18 +1,16 @@
-version: '3'
-
 services:
 
   # The production Teamscale instance.
-  v7.7:
-    # This targets the latest 7.7 release. Altenatively use e.g. 'cqse/teamscale:7.7.0' to point to a specific release.
-    image: 'cqse/teamscale:7.7.latest'
+  v2025.1:
+    # This targets the latest 2025.1 release. Alternatively use e.g. 'cqse/teamscale:2025.1.0' to point to a specific release.
+    image: 'cqse/teamscale:2025.1.latest'
     restart: unless-stopped
     # The working directory within the docker container, where all data is stored.
     # This is different from the installation directory `/opt/teamscale`
     working_dir: /var/teamscale
     volumes:
-      # Use the `v7.7` folder as working directory
-      - ./v7.7/:/var/teamscale/
+      # Use the `v2025.1` folder as working directory
+      - ./v2025.1/:/var/teamscale/
       # Mount the custom checks (if present) as read-only within the working directory
       # - ./custom-checks:/var/teamscale/custom-checks:ro
       # Also external libraries (such as the SAP Java Connector) should be mounted as read-only within the installation directory
@@ -27,18 +25,18 @@ services:
       TS_PROPERTIES: |-
         database.type=leveldb
         engine.workers=2
-        instance.name=v7.7
+        instance.name=v2025.1
       # You can also specify additional options that should be appended to the JVM command line
       # TEAMSCALE_OPTS: >-
       #   -Dcom.teamscale.mergerequest.disable-automatic-webhook-creation=true
 
   # The staging Teamscale instance.
-  v7.8:
-    image: 'cqse/teamscale:7.8.latest'
+  v2025.2:
+    image: 'cqse/teamscale:2025.2.latest'
     restart: unless-stopped
     working_dir: /var/teamscale
     volumes:
-      - ./v7.8/:/var/teamscale/
+      - ./v2025.2/:/var/teamscale/
       # Mount the custom checks (if present) as read-only within the working directory
       # - ./custom-checks:/var/teamscale/custom-checks:ro
       # Also external libraries (such as the SAP Java Connector) should be mounted as read-only within the installation directory
@@ -49,7 +47,7 @@ services:
       TS_PROPERTIES: |-
         database.type=leveldb
         engine.workers=2
-        instance.name=v7.8
+        instance.name=v2025.2
 
   # The nginx server that proxies the Teamscale instances
   nginx:

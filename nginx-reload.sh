@@ -5,8 +5,8 @@
 # If a custom container name is used, adjust here
 NGINX_CONTAINER=nginx
 
-# Defaults to use docker-compose, but may also use docker and change to the full container name
-DOCKER_CMD=docker-compose
+# Defaults to use docker compose, but may also use docker and change to the full container name
+DOCKER_CMD="docker compose"
 
 # Check if config file is ok
 $DOCKER_CMD exec $NGINX_CONTAINER nginx -t

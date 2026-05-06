@@ -17,25 +17,47 @@ Configuration:
         # See https://logging.apache.org/log4j/2.x/manual/layouts.html
         Pattern: "* %-5level [%threadName] %date:%variablesNotEmpty{ %mdc{job}:} %message%n"
 
-    RollingFile: # This appender writes all log entries to a list of files (overwriting old files eventually)
-      name: TeamscaleLogFile
-      fileName: logs/teamscale.log
-      filePattern: logs/teamscale-%i.log
-      policies:
-        SizeBasedTriggeringPolicy:
-          size: 1MB
-      DefaultRolloverStrategy:
-        max: 10
-      PatternLayout:
-        Pattern: "* %-5level [%threadName] %date:%variablesNotEmpty{ %mdc{job,trigger,project,commit}:} %message%n"
-      Filters:
-        RegexFilter: # filters messages from this appender based on regex (matching log messages are ignored)
-          regex: ".*Couldn't find physical processor count.*"
-          onMatch: DENY
-          onMismatch: NEUTRAL
+    RollingFile: # These appenders write log entries to files (overwriting old files eventually)
+      - name: TeamscaleLogFile
+        fileName: logs/teamscale.log
+        filePattern: logs/teamscale-%i.log
+        policies:
+          SizeBasedTriggeringPolicy:
+            size: 1MB
+        DefaultRolloverStrategy:
+          max: 10
+        PatternLayout:
+          Pattern: "* %-5level [%threadName] %date:%variablesNotEmpty{ %mdc{job,trigger,project,commit}:} %message%n"
+        Filters:
+          RegexFilter: # filters messages from this appender based on regex (matching log messages are ignored)
+            regex: ".*Couldn't find physical processor count.*"
+            onMatch: DENY
+            onMismatch: NEUTRAL
+      - name: AuditLogFile # This appender writes audit log entries to logs/audit.log
+        fileName: logs/audit.log
+        filePattern: logs/audit-%i.log
+        policies:
+          SizeBasedTriggeringPolicy:
+            size: 1MB
+        DefaultRolloverStrategy:
+          max: 10
+        PatternLayout:
+          Pattern: "%-5level %date: %message%n"
 
     TeamscaleLog: # This appender handles the Teamscale-internal logging (i.e., the log messages we show in the system perspective)
       name: TeamscaleLogAppender
+      Filters:
+        MarkerFilter:
+          - marker: parse-log
+            onMatch: ACCEPT     # We always accept parse-log entries. This is required
+            onMismatch: NEUTRAL # to populate the parse log view in the Teamscale UI.
+          - marker: Interaction  # We always accept interaction logs. This is required
+            onMatch: ACCEPT      # to have INFO messages in the TS interaction log view.
+            onMismatch: NEUTRAL
+        ThresholdFilter:
+          level: WARN # Drop all remaining INFO messages, only keep warnings and errors
+          onMatch: ACCEPT
+          onMismatch: DENY
 
   #    File:
   #      # This appender (if uncommented) writes all messages to logs/ldap.log.
@@ -91,20 +113,10 @@ Configuration:
 
   Loggers: # The loggers define which messages are routed to which appenders.
     Root:
-      level: info # First filtering stage: drop everything below INFO level
-      Filters: # Second filtering stage
-        - MarkerFilter:
-            marker: parse-log  # We always accept parse-log entries. This is required
-            onMatch: ACCEPT    # to populate the parse log view in the Teamscale UI.
-            onMismatch: NEUTRAL
-        - MarkerFilter:
-            marker: INTERACTION  # We always accept interaction logs. This is required
-            onMatch: ACCEPT      # to have INFO messages in the TS interaction log view.
-            onMismatch: NEUTRAL
-        - ThresholdFilter:
-            level: warn # Drop all remaining INFO messages, only keep warnings and errors
+      level: info # First filtering stage: drop everything below INFO level. Do not increase this to warn as this filter out all parser log and interaction log messages
       AppenderRef:
         - ref: TeamscaleLogFile
+          level: warn
         - ref: TeamscaleLogAppender
         - ref: ConsoleErrorAppender
           level: fatal # nothing below fatal is forwarded to the ConsoleErrorAppender
@@ -121,28 +133,40 @@ Configuration:
         level: info
         additivity: false
         AppenderRef:
-          ref: TeamscaleLogFile
-#      # Configuration for the "LdapLog" file appender example above that also logs level info to the appender.
-#      - name: com.teamscale.core.authenticate.ldap # name of the package which should be handled by this logger
-#        level: info
-#        additivity: true # when set to false, root logger will not receive events already logged here
-#        AppenderRef:
-#          ref: LdapLog # name of the appender that is served by this logger
-#      # Configuration for the "VotingLog" file appender example above that also logs level info to the appender.
-#      # These two loggers only include logs via the static loggers defined in these classes.
-#      - name: com.teamscale.index.merge_request.voting.VotingRecorder
-#        level: info
-#        additivity: true
-#        AppenderRef:
-#          ref: VotingLog
-#      - name: com.teamscale.index.repository.git.common.CommitVotingTriggerBase
-#        level: info
-#        additivity: true
-#        AppenderRef:
-#          ref: VotingLog
-#      # Configuration for the "ServiceLog" file appender example above that logs level info logs about REST requests.
-#      - name: teamscale-rest-api-requests
-#        level: info
-#        additivity: false # Ensure that logs are only written to service log file and not sent to the TeamscaleLogAppender.
-#        AppenderRef:
-#          ref: ServiceLog
+          - ref: TeamscaleLogFile
+            level: info
+      #      # Configuration for the "LdapLog" file appender example above that also logs level info to the appender.
+      #      - name: com.teamscale.core.authenticate.ldap # name of the package which should be handled by this logger
+      #        level: info
+      #        additivity: true # when set to false, root logger will not receive events already logged here
+      #        AppenderRef:
+      #          - ref: LdapLog # name of the appender that is served by this logger
+      #            level: info
+      #      # Configuration for the "VotingLog" file appender example above that also logs level info to the appender.
+      #      # These two loggers only include logs via the static loggers defined in these classes.
+      #      - name: com.teamscale.index.merge_request.voting.VotingRecorder
+      #        level: info
+      #        additivity: true
+      #        AppenderRef:
+      #          - ref: VotingLog
+      #            level: info
+      #      - name: com.teamscale.index.repository.git.common.CommitVotingTriggerBase
+      #        level: info
+      #        additivity: true
+      #        AppenderRef:
+      #          - ref: VotingLog
+      #            level: info
+      #      # Configuration for the "ServiceLog" file appender example above that logs level info logs about REST requests.
+      #      - name: teamscale-rest-api-requests
+      #        level: info
+      #        additivity: false # Ensure that logs are only written to service log file and not sent to the TeamscaleLogAppender.
+      #        AppenderRef:
+      #          - ref: ServiceLog
+      #            level: info
+      # Audit logs record security-relevant events (e.g., login attempts, permission changes).
+      - name: com.teamscale.core.log.AuditLogs
+        level: info
+        additivity: false
+        AppenderRef:
+          - ref: AuditLogFile
+            level: info

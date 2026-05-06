@@ -23,7 +23,7 @@ services:
       # You can specify Teamscale properties here
       # teamscale.properties is not considered at all when this environment variable is set
       TS_PROPERTIES: |-
-        database.type=leveldb
+        database.type=rocksdb
         engine.workers=2
         instance.name=v2025.1
       # You can also specify additional options that should be appended to the JVM command line
@@ -45,7 +45,7 @@ services:
       TZ: "Europe/Berlin"
       TEAMSCALE_MEMORY: 4G
       TS_PROPERTIES: |-
-        database.type=leveldb
+        database.type=rocksdb
         engine.workers=2
         instance.name=v2025.2
 

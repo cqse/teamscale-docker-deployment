@@ -43,6 +43,18 @@ Configuration:
           max: 10
         PatternLayout:
           Pattern: "%-5level %date: %message%n"
+      # This appender (if uncommented) writes the MCP activity log to logs/mcp.log.
+      # This appender is referenced by name McpLogFile in the logger configuration below.
+      # - name: McpLogFile
+      #   fileName: logs/mcp.log
+      #   filePattern: logs/mcp-%i.log
+      #   policies:
+      #     SizeBasedTriggeringPolicy:
+      #       size: 1MB
+      #   DefaultRolloverStrategy:
+      #     max: 10
+      #   PatternLayout:
+      #     Pattern: "%-5level %date: %message%n"
 
     TeamscaleLog: # This appender handles the Teamscale-internal logging (i.e., the log messages we show in the system perspective)
       name: TeamscaleLogAppender
@@ -170,3 +182,11 @@ Configuration:
         AppenderRef:
           - ref: AuditLogFile
             level: info
+      # Configuration for the "McpLogFile" appender example above. The MCP activity log records one line per
+      # JSON-RPC message that the MCP endpoint handles.
+      # - name: teamscale-mcp
+      #   level: info
+      #   additivity: false
+      #   AppenderRef:
+      #     - ref: McpLogFile
+      #       level: info
